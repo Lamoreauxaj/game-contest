@@ -24,6 +24,7 @@ private:
   GameInfo gameInfo;
   std::pair<int, int> move(const GameState& state, int timerOffset);
   int calculateRankOfState(const GameState& state);
+  GameState processGameState(const GameState& state);
   GameState approximateNextState(const GameState& state, int timeDelta);
   MovingObject movePaddle(const MovingObject& obj, int timeDelta);
   MovingObject moveBall(const MovingObject& ball, int timeDelta);

@@ -23,15 +23,36 @@ void Cowculator::init(int Nrows, int Ncols, int Npaddles_per_player, int paddle_
   bot_name = "COWCULATOR";
 }
 
+GameState Cowculator::processGameState(const GameState& state) {
+  GameState res = state;
+  res.me.row *= 1000;
+  res.me.col *= 1000;
+  res.me.row_vel *= 1000;
+  res.me.col_vel *= 1000;
+  res.opponent.row *= 1000;
+  res.opponent.col *= 1000;
+  res.opponent.row_vel *= 1000;
+  res.opponent.col_vel *= 1000;
+  for (MovingObject& ball : res.balls) {
+    ball.row *= 1000;
+    ball.col *= 1000;
+    ball.row_vel *= 1000;
+    ball.col_vel *= 1000;
+  }
+  return res;
+}
+
 std::pair<int, int> Cowculator::move(MovingObject me, MovingObject opponent, std::vector<MovingObject> balls, int timer_offset) {
   GameState state;
   state.me = me;
   state.opponent = opponent;
   state.balls = balls;
+  state = processGameState(state);
   return move(state, timer_offset);
 }
 
 std::pair<int, int> Cowculator::move(const GameState& state, int timerOffset) {
+  GameState next = approximateNextState(state, 100);
   return std::make_pair(rand() % 201 - 100, 0);
 }
 

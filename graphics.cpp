@@ -1,5 +1,6 @@
 #include <iostream>
 #include <sys/time.h>
+// #include <GLUT/glut.h>
 #include "freeglut.h"
 #include "graphics.h"
 
