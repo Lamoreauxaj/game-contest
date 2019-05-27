@@ -2,11 +2,7 @@
 #define COWCULATOR
 #include "bot.h"
 
-int capValue(int value, int min, int max) {
-  if (value >= max) value = max;
-  if (value <= min) value = min;
-  return value;
-}
+int capValue(int value, int min, int max);
 
 struct GameInfo {
   int numRows, numCols, numPaddles, paddleSize;
