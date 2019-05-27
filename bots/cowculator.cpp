@@ -20,7 +20,6 @@ std::vector<MovingObject> Cowculator::getPaddles(const MovingObject& paddle, boo
 void Cowculator::init(int Nrows, int Ncols, int Npaddles_per_player, int paddle_size, bool am_i_left) {
   gameInfo.numRows = Nrows * 1000;
   gameInfo.numCols = Ncols * 1000;
-  std::cout << gameInfo.numRows << "\n";
   gameInfo.numPaddles = Npaddles_per_player;
   gameInfo.paddleSize = paddle_size * 1000;
   gameInfo.isLeft = am_i_left;
@@ -88,15 +87,63 @@ std::pair<int, int> Cowculator::move(const GameState& state, int timerOffset) {
   // compareStates(nextState, state);
   // compareStates(lastState, state);
   // lastState = state;
-  return std::make_pair(rand() % 201 - 100, 0);
+  // std::queue<pair<double, GameState>> q;
+  // q.push({calculateRankOfState(state), state});
+  int bestRowVel = 0, bestColVel = 0;
+  double bestRank = -1e9;
+  for (int rowVel = -100; rowVel <= 100; rowVel += 10) {
+    for (int colVel = -100; colVel <= 100; colVel += 10) {
+      GameState curr = state;
+      curr.me.row_vel = rowVel * 1000;
+      curr.me.col_vel = colVel * 1000;
+      GameState prediction = approximateNextState(curr, 400);
+      double rank = calculateRankOfState(prediction);
+      if (rank > bestRank) {
+        bestRank = rank;
+        bestRowVel = rowVel;
+        bestColVel = colVel;
+      }
+    }
+  }
+  // std::cout << calculateRankOfState(state) << "\n";
+  return std::make_pair(bestRowVel, bestColVel);
+  // return std::make_pair(rand() % 201 - 100, 0);
 }
 
-int Cowculator::calculateRankOfState(const GameState& state) {
-  int score = 0;
+double Cowculator::calculateRankOfState(const GameState& state) {
+  double score = 0;
   for (const MovingObject& ball : state.balls) {
     std::vector<MovingObject> myPaddles = getPaddles(state.me, gameInfo.isLeft);
     int section = ball.col / (gameInfo.numCols / (4 * gameInfo.numPaddles - 1));
+    int paddlesAhead = 0;
+    int paddleDist = 0;
+    for (const MovingObject& paddle : myPaddles) {
+      if ((paddle.col < ball.col) ^ !gameInfo.isLeft) {
+        paddlesAhead++;
+        paddleDist = abs(paddle.row + gameInfo.paddleSize / 2 - ball.row);
+      }
+    }
+    if ((ball.col_vel < 0) ^ !gameInfo.isLeft) {
+      switch (paddlesAhead) {
+        case 0: score -= 10; break;
+        case 1: score += 10; break;
+        case 2: score += 20; break;
+        case 3: score += 30; break;
+      }
+      if (paddlesAhead) {
+        score -= paddleDist / 5000.0;
+      }
+    }
+    else {
+      switch (paddlesAhead) {
+        case 0: score += 10; break;
+        case 1: score += 20; break;
+        case 2: score += 30; break;
+        case 3: score += 40; break;
+      }
+    }
   }
+  return score;
 }
 
 GameState Cowculator::approximateNextState(const GameState& state, int timeDelta) {
