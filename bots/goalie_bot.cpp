@@ -26,7 +26,7 @@ pair<int,int> goalie_bot::move(MovingObject me,
     return current_vel;
   }
   int midpt = me.row + PS/2;
-  if (midpt > balls[closest_ball].row+1) return make_pair(-100, 0);
-  else if (midpt < balls[closest_ball].row-1) return make_pair(100, 0);
+  if (midpt > balls[closest_ball].row+1) return make_pair(-10, 0);
+  else if (midpt < balls[closest_ball].row-1) return make_pair(10, 0);
   else return make_pair(0,0);
 }

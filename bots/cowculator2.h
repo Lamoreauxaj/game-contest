@@ -4,7 +4,9 @@
 #include "bot.h"
 using namespace std;
 
-const int TIME_DELTA = 200;
+const bool STRIKE = false;
+const double STRIKE_PERCENTAGE = .4;
+const vector<int> PADDLE_WEIGHTS = {1, 5, 1000};
 
 struct Ball : public MovingObject {
 };
@@ -34,6 +36,8 @@ private:
 
     pair<int, int> calculatePosition(const Ball& ball, int time);
     int timeToHit(const Ball& ball, const Paddle& me);
+
+    int calculateMove(const vector<pair<pair<int, int>, int>>& balls, int row);
 
 public:
     void init(int Nrows, int Ncols, int Npaddles_per_player, int paddle_size, bool am_i_left);
