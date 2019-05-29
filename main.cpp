@@ -10,13 +10,13 @@
 #include "bots/smash_bot.h"
 #include "bots/goalie_bot.h"
 #include "bots/random_bot.h"
-#include "bots/cowculator.h"
+#include "bots/cowculator2.h"
 
 int main(int argc, char *argv[])
 {
   /* Set up bots here -- either add 2 bots for autonomous play or 1 bot to play against a human */
   moosball_addbot(new goalie_bot);
-  moosball_addbot(new Cowculator);
+  moosball_addbot(new Cowculator2);
 
   moosball_play(argc, argv);  
   return 0;
